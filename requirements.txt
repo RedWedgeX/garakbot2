@@ -1,0 +1,7 @@
+requests
+pytz
+aiosqlite
+ffmpeg
+tiktoken
+nextcord
+google-generativeai
