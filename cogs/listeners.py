@@ -156,6 +156,10 @@ class Listeners(commands.Cog, name="Bot Responders & Listeners"):
                 m = re.sub(r'[^\w\s]', '', m)
                 await message.channel.send(f"{message.author.mention} - ESPECIALLY the {m}!")
 
+            if "funny" in message.content.lower().split() and random.randint(1, 10) == 1:
+                await message.channel.send(f"{message.author.mention} asked for a random CatPic™: \n"
+                                           f"\n{catpic()}")
+
             if message.content.startswith(f"<@{self.bot.user.id}") or message.content.startswith(f"<@&{BOT_ROLE_ID}"):
                 await Listeners.chatbot(self, message)
 
