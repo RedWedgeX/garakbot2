@@ -4,12 +4,11 @@ import re
 
 import nextcord as discord
 from nextcord.ext import commands
-from random import randrange
 from utils.config import *
 from nextcord.ext.commands.errors import CommandNotFound
 from datetime import datetime as dt
 from pytz import timezone
-from utils.helpers import catfacts, catpic
+from utils.helpers import catpic
 import google.generativeai as genai
 import os
 import time
@@ -241,43 +240,39 @@ class Listeners(commands.Cog, name="Bot Responders & Listeners"):
 
     @commands.command(hidden=True)
     async def gemini(self, ctx, author, *prompt: str):
+        if self.bot.cgpt_enabled:
+            user_id = author.id
+            prompt = ' '.join(prompt)
+            system_instructions = GEMINI_PROMPT
 
-                user_id = author.id
-                prompt = ' '.join(prompt)
-                system_instructions = GEMINI_PROMPT
+            if author.nick:
+                nickname = author.nick
+            else:
+                nickname = author.name
 
-                if author.nick:
-                    nickname = author.nick
-                else:
-                    nickname = author.name
+            history = await load_chat_history_for_user(user_id)
 
-                history = await load_chat_history_for_user(user_id)
+            genai.configure(api_key=os.getenv("GEMINI_API"))
+            model = genai.GenerativeModel(
+                model_name="gemini-1.5-pro",
+                system_instruction=system_instructions + f" \n\n Info about the user you're chatting with:\n"
+                                                         f" Their user name is {author.display_name}.\n"
+                                                         f"You can @ mention them as {author.mention}.\n "
+                                                         f"Your nickname is {self.bot.user.name}, "
+                                                         f"and your user id is {self.bot.user.id}.",
+            )
+            chat = model.start_chat(history=history)
 
-                genai.configure(api_key=os.getenv("GEMINI_API"))
-                model = genai.GenerativeModel(
-                    model_name="gemini-1.5-pro",
-                    system_instruction=system_instructions + f" \n\n Info about the user you're chatting with:\n"
-                                                             f" Their user name is {author.display_name}.\n"
-                                                             f"You can @ mention them as {author.mention}.\n "
-                                                             f"Your nickname is {self.bot.user.name}, "
-                                                             f"and your user id is {self.bot.user.id}.",
-                )
-                chat = model.start_chat(history=history)
+            info = (f"User info: \n{author.name}\n{author.mention}\n{author.nick}\n\n")
 
-                info = (f"User info: \n{author.name}\n{author.mention}\n{author.nick}\n\n")
+            await add_chat_history(user_id, "user", prompt)
 
-                await add_chat_history(user_id, "user", prompt)
-
-                try:
-                    response = chat.send_message(prompt)
-                    await add_chat_history(user_id, "model", response.text)
-                    # chat.history.append({"role": "model", "parts": response.text})
-
-                    # Split response into chunks of 2000 characters or less
-                    response_text = response.text
-                    return response.text
-                except Exception as e:
-                    return (f'```py\n{traceback.format_exc()}\n```')
+            try:
+                response = chat.send_message(prompt)
+                await add_chat_history(user_id, "model", response.text)
+                return response.text
+            except Exception as e:
+                return (f'```py\n{traceback.format_exc()}\n```')
 
 async def add_chat_history(user_id, role, parts):
     async with aiosqlite.connect(DB_PATH) as db:
