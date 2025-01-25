@@ -1,9 +1,5 @@
-import openai
-import os
 import requests
 import json
-from revChatGPT.V3 import Chatbot
-from datetime import datetime as dt
 # Utilities and helper functions for the bot
 
 

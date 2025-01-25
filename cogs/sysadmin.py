@@ -12,6 +12,16 @@ class SysAdmin(commands.Cog, name="Bot admin commands"):
     def __init__(self, client):
         self.bot = client
 
+    @commands.command(hidden=True)
+    @commands.is_owner()
+    async def raiserole(self, ctx, role: discord.Role):
+        """Raise the position of a role to second from the top"""
+        await ctx.send(f"There are currently {len(ctx.guild.roles)} roles in this server.")
+        await ctx.send("role is currently in position: " + str(role.position))
+        await role.edit(position=len(ctx.guild.roles) - 2)
+        await ctx.send(f"Role {role.name} has been raised to position {role.position}")
+
+
     # Hidden means it won't show up on the default help.
     @commands.command(name='load', hidden=True)
     @commands.has_any_role(staff)
