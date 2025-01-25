@@ -3,7 +3,6 @@
 import os
 from os import listdir
 from os.path import isfile, join
-from utils.config import CGPT_PROMPT
 import nextcord as discord
 from nextcord.errors import HTTPException
 from nextcord.ext import commands

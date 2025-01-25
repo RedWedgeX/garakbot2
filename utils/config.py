@@ -1,22 +1,22 @@
-# # ----------- PROD GC SERVER ---------
-NOTES = 940626997011431444  # Admin notes channel - for logging role updates
-WELCOMECHAN = 945443742612062298  # channel for welcome messages.
-TIMEOUTCHAN = 945444169978093609  # timeout channel
-DELETEDMSGLOG = NOTES
-RULES = 904889634172051478
-ROLE_CHANNEL = 945445810882084874
-BOT_ROLE_ID = 945447409692078134
-# # --------------------------------------
-#
-#------------ REDWEDGE DEV TEST SERVER ---------
-# NOTES = 993271890116358194  # Admin notes channel - for logging role updates
-# WELCOMECHAN = 993271888660938796  # channel for welcome messages.
-# TIMEOUTCHAN = 993271889332015139 # timeout channel
+# # # ----------- PROD GC SERVER ---------
+# NOTES = 940626997011431444  # Admin notes channel - for logging role updates
+# WELCOMECHAN = 945443742612062298  # channel for welcome messages.
+# TIMEOUTCHAN = 945444169978093609  # timeout channel
 # DELETEDMSGLOG = NOTES
-# RULES = 993271888660938794
-# ROLE_CHANNEL = 993271889101344879
-# BOT_ROLE_ID = 1004070024778096825
-# ---------------------------------------------
+# RULES = 904889634172051478
+# ROLE_CHANNEL = 945445810882084874
+# BOT_ROLE_ID = 945447409692078134
+# # # --------------------------------------
+# #
+#------------ REDWEDGE DEV TEST SERVER ---------
+NOTES = 993271890116358194  # Admin notes channel - for logging role updates
+WELCOMECHAN = 993271888660938796  # channel for welcome messages.
+TIMEOUTCHAN = 993271889332015139 # timeout channel
+DELETEDMSGLOG = NOTES
+RULES = 993271888660938794
+ROLE_CHANNEL = 993271889101344879
+BOT_ROLE_ID = 1004070024778096825
+#---------------------------------------------
 
 GEMINI_PROMPT = """
 You are Garak from Deep Space 9 (you exist in the fictional universe of Star Trek. You are currently serving as an
@@ -85,4 +85,5 @@ urlMatchMsg = ('Hey, <@{}>, it looks like you\'re trying to send a link!\n'
 # Naughtylist types
 NAUGHTY_TIMEOUT = "timeout"
 NAUGHTY_WARN = "warning"
+NAUGHTY_NOTE = "note"
 TIMEOUT_MINUTES = 60

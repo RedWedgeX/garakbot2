@@ -71,7 +71,7 @@ class Listeners(commands.Cog, name="Bot Responders & Listeners"):
         await channel.send(f"Peldor joi, and welcome :wave: to  the Garak Crafier's & Sisko's Creole Kitchen Discord, {member.mention}!  {onjoinmsg}")
         await member.send(f"Peldor joi, and welcome :wave: to  the Garak Crafier's & Sisko's Creole Kitchen Discord, {member.mention}!  {onjoinmsg}")
 
-    async def chatbot(self, message):
+    async def chatbot(self, topic, message):
         provider = "openai"
         # if not self.bot.cgpt_enabled:
         if not 1==1:
@@ -111,7 +111,7 @@ class Listeners(commands.Cog, name="Bot Responders & Listeners"):
                         except Exception as e:
                             await syslog.send(f"**BOT ERROR**\n```{e}```")
                     # ---------
-                    response = await self.gemini(message, message.author, query)
+                    response = await self.gemini(message, message.author, f"{topic} - {query}")
                     # Check if the message is longer than 2000 characters
                     if len(response) > 1950:
                         # Split the message into chunks of 2000 characters or less
@@ -146,7 +146,8 @@ class Listeners(commands.Cog, name="Bot Responders & Listeners"):
 
         #if message.content.startswith(f"<@{self.bot.user.id}") or message.content.startswith(f"<@&{BOT_ROLE_ID}"):
         if self.bot.user.mentioned_in(message) and message.channel.id not in EXCLUDE_FROM_CHATBOT_RESPONSE:
-            await Listeners.chatbot(self, message)
+            # await Listeners.chatbot(self, f"(topic: {message.channel.name}) {message}")
+            await Listeners.chatbot(self, f"(topic: {message.channel.name}", message)
 
         if message.channel.id not in EXCLUDE_FROM_CHATBOT_RESPONSE:
             if "even the" in ' '.join(message.content).lower():

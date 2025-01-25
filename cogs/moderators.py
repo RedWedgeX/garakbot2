@@ -8,6 +8,7 @@ import aiosqlite
 import nextcord as discord
 import pytz
 from nextcord.ext import commands
+from nextcord.errors import *
 
 # Local imports
 from utils.config import *
@@ -84,7 +85,7 @@ class Moderators(commands.Cog, name="Moderator and Administrator Commands"):
             why = ' '.join(why)
             why = remove_non_ascii(why)
         try:
-            await user.ban(reason=why, delete_message_days=2)
+            await user.ban(reason=why, delete_message_seconds=172800)
         except Exception:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
@@ -107,7 +108,7 @@ class Moderators(commands.Cog, name="Moderator and Administrator Commands"):
             why = remove_non_ascii(why)
 
         try:
-            await user.kick(reason=why, delete_message_days=0)
+            await user.kick(reason=why)
         except Exception:
             await ctx.send(f'```py\n{traceback.format_exc()}\n```')
         else:
@@ -178,12 +179,19 @@ class Moderators(commands.Cog, name="Moderator and Administrator Commands"):
         reason = remove_non_ascii(reason)
         channel = self.bot.get_channel(MOD_ACTIONS_CHANNEL_ID)
         await ctx.message.delete()
-        await ctx.send(f"{user.mention}, you've received a warning. Check your DMs for more details.")
+        try:
+
+            await user.send(f"Hey {user.mention}, you've been issued a warning for your actions "
+                            f"in {user.guild.name}.\n Please understand that further actions will "
+                            f"result in expulsion from the server.\n Reason: **{reason}**")
+        except discord.errors.Forbidden:
+            await ctx.send(f"{user.mention}, you've been issued a warning for your actions. "
+                           f"Please understand that further actions will result in expulsion from the server.\n"
+                           f"I was unable to DM you the reason. Reach out to a modmin.")
+        else:
+            await ctx.send(f"{user.mention}, you've received a warning. Check your DMs for more details.")
         await channel.send(f"{user.mention}'s has been WARNED by {ctx.message.author.mention} in "
                            f"{ctx.message.channel.mention}.\nReason: {reason}")
-        await user.send(f"Hey {user.mention}, you've been issued a warning for your actions "
-                        f"in {user.guild.name}.\n Please understand that further actions will "
-                        f"result in expulsion from the server.\n Reason: **{reason}**")
 
         # Add the action to the database
         async with aiosqlite.connect(DB_PATH) as db:
@@ -222,7 +230,7 @@ class Moderators(commands.Cog, name="Moderator and Administrator Commands"):
 
     # USER
     @commands.command(name='info', aliases=['user', 'user_info', 'userinfo', 'luser'])
-    @commands.has_any_role(staff, mods)
+    @commands.has_any_role(staff, *mods)
     async def user_info(self, ctx, user: discord.Member):
         """ - Shows info about user, including warns, timeouts, and notes"""
         embed = discord.Embed()
@@ -241,7 +249,7 @@ class Moderators(commands.Cog, name="Moderator and Administrator Commands"):
                 action_type = record[2]
                 action_time = datetime.strptime(record[3], "%Y-%m-%d %H:%M:%S")
                 action_time = action_time.astimezone(home_timezone)
-                local_time = action_time.strftime("%m/%d %H:%M:%S")
+                local_time = action_time.strftime("%m/%d/%y %H:%M")
                 reason = record[4]
                 active = record[6]
                 submitted_by = await self.bot.fetch_user(int(record[5]))
@@ -268,7 +276,8 @@ class Moderators(commands.Cog, name="Moderator and Administrator Commands"):
             timeouts = "None"
         if notes  == "":
             notes = "None"
-        embed.set_thumbnail(url=user.avatar.url)
+        if user.avatar:
+            embed.set_thumbnail(url=user.avatar.url)
         embed.add_field(name="Name", value=user.mention, inline=True)
         embed.add_field(name="Discord ID", value=user.id, inline=True)
         embed.add_field(name="Joined", value=user.joined_at.strftime('%Y-%m-%d'), inline=True)
