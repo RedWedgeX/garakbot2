@@ -44,7 +44,7 @@ DB_PATH = "db/db.sqlite"
 restricted = "airlock"
 staff = "Q"
 mods = ['GC Modmin', 'SCK Modmin']
-TIMEOUT_ROLE_NAME = "brig"
+TIMEOUT_ROLE_NAME = "timeout"
 
 EXCLUDE_FROM_CHATBOT_RESPONSE = [946272022852419615, 954583313845219348, WELCOMECHAN]
 
