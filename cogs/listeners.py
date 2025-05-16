@@ -68,8 +68,8 @@ class Listeners(commands.Cog, name="Bot Responders & Listeners"):
         await member.add_roles(role)
         syslog = self.bot.get_channel(SYSLOG)
         await syslog.send(f"{member.mention} joined the server.")
-        await channel.send(f"Peldor joi, and welcome :wave: to  the Garak Crafier's & Sisko's Creole Kitchen Discord, {member.mention}!  {onjoinmsg}")
-        await member.send(f"Peldor joi, and welcome :wave: to  the Garak Crafier's & Sisko's Creole Kitchen Discord, {member.mention}!  {onjoinmsg}")
+        await channel.send(f"Peldor joi, and welcome :wave: to  the Garak’s Craftiers & Sisko's Creole Kitchen Discord, {member.mention}!  {onjoinmsg}")
+        await member.send(f"Peldor joi, and welcome :wave: to  the Garak’s Craftiers  & Sisko's Creole Kitchen Discord, {member.mention}!  {onjoinmsg}")
 
     async def chatbot(self, topic, message):
         provider = "openai"
